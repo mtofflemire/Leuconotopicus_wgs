@@ -14,7 +14,7 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate genomics
 
 # Input directory with coordinate-sorted BAMs from your align step
-IN="/usr/scratch2/userdata2/mtofflemire/projects/picoides_genotyping/data/alignments2"
+IN="/usr/scratch2/userdata2/mtofflemire/projects/leuconotopicus/reseq_WD/round_1_preprocessing_wgs/alignments"
 
 # Use 20 threads for sambamba (and for index/flagstat if you like)
 THREADS=20
