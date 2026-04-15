@@ -4,17 +4,20 @@
 #PBS -l nodes=1:ppn=20,mem=64gb,walltime=24:00:00
 #PBS -q batch
 #PBS -j oe
-#PBS -o /usr/scratch2/userdata2/mtofflemire/projects/picoides_genotyping/out/align_mem2_only.log
+#PBS -o /usr/scratch2/userdata2/mtofflemire/projects/leuconotopicus/reseq_WD/round_1_preprocessing_wgs/alignments/align_mem2_only.log
 
 set -euo pipefail
-cd "$PBS_O_WORKDIR"
+cd "/usr/scratch2/userdata2/mtofflemire/projects/leuconotopicus/reseq_WD"
 source ~/miniconda3/etc/profile.d/conda.sh; 
 conda activate genomics
 
 
-REF="/usr/scratch2/userdata2/mtofflemire/references/ncbi_dataset/data/GCF_014839835.1/GCF_014839835.1_bDryPub1.pri_genomic.fna"   # bwa-mem2 index mus$
-INPUT_DIR="/usr/scratch2/userdata2/mtofflemire/projects/picoides_genotyping/data/fastq"                                       # point to TRIMMED rea$
-OUTDIR="/usr/scratch2/userdata2/mtofflemire/projects/picoides_genotyping/data/alignments2"
+REF="/usr/scratch2/userdata2/mtofflemire/projects/leuconotopicus/ref_genome/GCF_014839835.1_bDryPub1.pri_genomic.fna"
+
+INPUT_DIR="/usr/scratch2/userdata2/mtofflemire/projects/leuconotopicus/raw_wgs/fastq"
+
+OUTDIR="/usr/scratch2/userdata2/mtofflemire/projects/leuconotopicus/reseq_WD/round_1_preprocessing_wgs/alignments"
+
 THREADS=20
 mkdir -p "$OUTDIR"
 
