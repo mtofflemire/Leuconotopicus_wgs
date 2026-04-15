@@ -1,0 +1,30 @@
+# 07_gather_raw_picoides.pbs
+#!/bin/bash
+#PBS -V
+#PBS -N gather_raw_picoides
+#PBS -l nodes=1:ppn=4,mem=16gb,walltime=500:00:00
+#PBS -q batch
+#PBS -o /usr/scratch2/userdata2/mtofflemire/projects/picoides_genotyping/out/gather_raw_picoides.log
+#PBS -j oe
+
+set -euo pipefail
+cd "$PBS_O_WORKDIR"
+
+# env
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate genomics
+
+OUT2=/usr/scratch2/userdata2/mtofflemire/projects/picoides_genotyping/out2
+
+cd "$OUT2"
+
+# Gather shards -> single cohort VCF
+gatk GatherVcfs \
+  $(printf -- '-I cohort.raw.%03d.vcf.gz ' $(seq 0 47)) \
+  -O picoides.raw.merged.vcf.gz
+
+# Index the merged VCF
+gatk IndexFeatureFile -I picoides.raw.merged.vcf.gz
+
+echo "Done: $OUT2/picoides.raw.merged.vcf.gz"
+
