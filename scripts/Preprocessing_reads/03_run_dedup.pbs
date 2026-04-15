@@ -1,0 +1,37 @@
+#!/bin/bash
+#PBS -V
+#PBS -N markdups_sambamba
+#PBS -l nodes=1:ppn=20,mem=64gb,walltime=12:00:00
+#PBS -q batch
+#PBS -j oe
+#PBS -o /usr/scratch2/userdata2/mtofflemire/projects/picoides_genotyping/out/markdups_sambamba.log
+
+set -euo pipefail
+cd "$PBS_O_WORKDIR"
+
+# Activate your env (sambamba + samtools available here)
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate genomics
+
+# Input directory with coordinate-sorted BAMs from your align step
+IN="/usr/scratch2/userdata2/mtofflemire/projects/picoides_genotyping/data/alignments2"
+
+# Use 20 threads for sambamba (and for index/flagstat if you like)
+THREADS=20
+
+# Mark duplicates (do NOT remove), index, and flagstat — outputs sit next to inputs
+for BAM in "$IN"/*.sorted.bam; do
+  [ -e "$BAM" ] || { echo "No *.sorted.bam files found in $IN"; exit 1; }
+  base="$(basename "$BAM" .sorted.bam)"
+
+  echo ">> Marking duplicates: $base"
+  sambamba markdup -t "$THREADS" "$BAM" "$IN/${base}.dedup.bam"
+
+  echo ">> Indexing: $base.dedup.bam"
+  sambamba index -t "$THREADS" "$IN/${base}.dedup.bam"
+
+  echo ">> Flagstat: $base.dedup.bam"
+  samtools flagstat -@ "$THREADS" "$IN/${base}.dedup.bam" > "$IN/${base}.dedup.flagstat.txt"
+done
+
+echo "All done."
